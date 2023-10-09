@@ -118,7 +118,7 @@ app.post("/post/tweet", async (req, res) => {
       /**posting a tweet */
       let postTweetResult = await axios.post(postTweetApi,{ "text": requestBody.text },{ headers });
       
-      res.status(200).send({ msg: "SUCCESS", tweetId: postTweetResult.data.id });
+      res.status(201).send({ msg: "CREATED", tweetId: postTweetResult.data.id });
       return;
     }catch(error){
       console.log(error.message);
@@ -127,7 +127,7 @@ app.post("/post/tweet", async (req, res) => {
     }
 
   } catch (error) {
-    console.log(error);
+    console.log(error.message);
     res.status(500).send({ msg: error.message });
     return;
   }
@@ -153,7 +153,7 @@ function checkUserToken(userId) {
       return;
     } catch (error) {
       console.log(error.message);
-      reject({ code: -1, data: error });
+      reject(error);
       return;
     }
   });
