@@ -19,7 +19,7 @@ let callbackUrl = `http://localhost:3000/twitter/callback`;
 let authUrl = `https://twitter.com/i/oauth2/authorize?`;
 let tokenUrl = `https://api.twitter.com/2/oauth2/token?`;
 let postTweetApi = `https://api.twitter.com/2/tweets`;
-
+let postTweetUrl = `https://twitter.com/intent/tweet?`;
 
 /**twitter configuration */
 const client_id = process.env.TWITTER_CLIENT_ID;
@@ -133,6 +133,16 @@ app.post("/post/tweet", async (req, res) => {
   }
 });
 
+app.post("/post/tweet/secondary", async(req, res) => {
+  let requestBody = JSON.parse(JSON.stringify(req.body));
+  
+  let freshPostTweetUrl = postTweetUrl;
+  freshPostTweetUrl += `text=${encodeURIComponent(requestBody.text)}`;
+  res.status(200).send(freshPostTweetUrl);
+  return;
+  
+});
+
 function checkUserToken(userId) {
   return new Promise(async (resolve, reject) => {
     try {
@@ -160,8 +170,7 @@ function checkUserToken(userId) {
 }
 
 function authorize(userId) {
-  return `${authUrl}response_type=code&scope=${scopes}&client_id=${client_id}&redirect_uri=${callbackUrl}&state=${userId}&code_challenge=${codeChallenge}&code_challenge_method=S256`;
-  
+  return `${authUrl}response_type=code&scope=${scopes}&client_id=${client_id}&redirect_uri=${callbackUrl}&state=${userId}&code_challenge=${codeChallenge}&code_challenge_method=S256`; 
 }
 
 app.listen(3000, (err) => {
