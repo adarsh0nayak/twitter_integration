@@ -77,11 +77,17 @@ app.get("/twitter/callback", async (req, res) => {
       return;
     }
 
-    global.user_twitter_map.push({
-      id: state,
-      accessToken,
-      expiresIn: new Date().getTime() + expiryInMill,
-    });
+    let userInfoIndex = global.user_twitter_map.findIndex(item  => item.id === state);
+    if(userInfoIndex != -1){
+      global.user_twitter_map[userInfoIndex].accessToken = accessToken;
+      global.user_twitter_map[userInfoIndex].expiresIn = new Date().getTime() + 20000;
+    }else{
+      global.user_twitter_map.push({
+        id: state,
+        accessToken,
+        expiresIn: new Date().getTime() + expiryInMill,
+      });
+    }
 
     res.status(200).send("SUCCESS");
     return;
